@@ -14,15 +14,19 @@
 
     (add (ses/rdf-serializer destination) quads)))
 
+(defn apply-pipeline [path]
+  (-> (open-all-datasets path)
+      first
+      pipeline))
+
 (defn -main [& [path output]]
   (when-not (and path output)
     (println "Usage: lein run <input-file.csv> <output-file.(nt|rdf|n3|ttl)>")
     (System/exit 0))
 
-  (-> (open-all-datasets path)
-      first
-      pipeline
+  (-> (apply-pipeline path)
       make-graph
-      (import-data output))
+      ;;(import-data output)
+      )
 
   (println path "=>" output))
