@@ -1,9 +1,13 @@
-(ns pluqi-transformation.transform)
+(ns pluqi-transformation.transform
+  (:require [clojure.string :as cstr]))
 
-;;; You can specify transformation functions in this namespace for use
-;;; within the pipeline.
+(defn replace-words [mapping]
+  (fn [s] (reduce (fn [st [match replacement]]
+                    (cstr/replace st (re-pattern (str "\\b" match "\\b")) replacement)) s
+                    (partition 2 mapping))))
 
-(defn ->integer
-  "An example transformation function that converts a string to an integer"
-  [s]
-  (Integer/parseInt s))
+(defn replace-hash [cell]
+  (cstr/replace cell #".* #" "number"))
+
+(defn extract-year [cell]
+  (first (cstr/split (str cell) #" # ")))

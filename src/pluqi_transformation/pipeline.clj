@@ -1,22 +1,42 @@
 (ns pluqi-transformation.pipeline
-  (:require [grafter.tabular :refer [column-names columns rows all-columns derive-column mapc swap drop-rows open-all-datasets make-dataset move-first-row-to-header _]]
+  (:require [grafter.tabular :refer [resolve-column-id column-names columns rows
+                                     all-columns derive-column mapc swap drop-rows
+                                     open-all-datasets make-dataset take-rows
+                                     move-first-row-to-header _ melt apply-columns]]
             [grafter.rdf :refer [graph-fn graph s]]
+            [grafter.parse :refer [mapper]]
+            [grafter.sequences :refer [fill-when]]
+            [grafter.tabular.common :refer [apply-rows]]
+            [incanter.core]
             [pluqi-transformation.prefix :refer :all]
-            [pluqi-transformation.transform :refer [->integer]]))
+            [pluqi-transformation.transform :refer [replace-words replace-hash extract-year]]))
 
-;; Pipeline modifies, for each row of the tabular file we are working
-;; on, the columns, so we can access or add the exact data we need
-;; for our templates.
+(defn select-row [ds n]
+  (->> (rows ds [n])
+       incanter.core/to-list
+       first))
 
-;; Tutorial
-;; http://grafter.org/tutorials/906_pipeline.html
+(defn normalise-header [ds f]
+  (let [[div type & years-row] (->> (select-row ds 0)
+                                    (drop 2))
+        type-row (->> (select-row ds 1)
+                      (drop 2))
 
+        new-header (->> (map #(str %1 " " %2) years-row type-row)
+                        (concat ["division" "type"])
+                        (map f))]
+    (make-dataset ds (map str new-header))))
 
 (defn pipeline [dataset]
   (-> dataset
-      (drop-rows 1)
-      (make-dataset [:name :sex :age])
-      (derive-column :person-uri [:name] base-id)
-      (mapc {:age ->integer
-             :sex {"f" (s "female")
-                   "m" (s "male")}})))
+      (normalise-header (replace-words ["waman" "female"
+                                        "femal" "female"
+                                        "man" "male"
+                                        "girl's" "female"
+                                        "graduate" "graduates"
+                                        "highschools" "high schools"]))
+      (drop-rows 2)
+      (apply-columns {:division fill-when})
+      (grafter.tabular/melt :type :division)
+      (derive-column :year [:variable] extract-year)
+      (mapc {:variable replace-hash})))
