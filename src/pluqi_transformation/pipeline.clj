@@ -6,7 +6,6 @@
             [grafter.rdf :refer [graph-fn graph s]]
             [grafter.parse :refer [mapper]]
             [grafter.sequences :refer [fill-when]]
-            [grafter.tabular.common :refer [apply-rows]]
             [incanter.core]
             [pluqi-transformation.prefix :refer :all]
             [pluqi-transformation.transform :refer [replace-words replace-hash extract-year]]))
