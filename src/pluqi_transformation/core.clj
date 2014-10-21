@@ -2,10 +2,24 @@
   (:require [grafter.tabular :refer :all]
             [grafter.rdf :refer :all]
             [grafter.rdf.sesame :as ses]
+            [clojure-csv.core :as csv]
             [pluqi-transformation.graph :refer [make-graph]]
             [pluqi-transformation.pipeline :refer [pipeline]]
             [grafter.rdf.sesame :as ses])
   (:gen-class))
+
+(defn ->csv-file
+  "Convert a dataset into a CSV file.  Not lazy.  For use at the
+  REPL to export pipelines as CSV."
+  [file-name dataset]
+  (let [cols (:column-names dataset)
+        data (:rows dataset)
+        stringified-rows (map (fn [row]
+                                (map (fn [item]
+                                       (str (get row item))) cols))
+                              data)
+        output-data (concat [(map name cols)] stringified-rows)]
+    (spit file-name (csv/write-csv output-data))))
 
 (defn import-data
   [quads-seq destination]
