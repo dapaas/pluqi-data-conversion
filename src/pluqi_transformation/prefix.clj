@@ -11,12 +11,16 @@
 
 ;; Defines what will be useful for our next data transformations
 
-(def base-domain (prefixer "http://my-domain.com"))
+(def base-domain (prefixer "http://project.dapaas.eu"))
 
-(def base-graph (prefixer (base-domain "/graph/")))
+(def base-vocab (prefixer (base-domain "/schema")))
 
-(def base-id (prefixer (base-domain "/id/")))
+(def pluqi-vocab (prefixer (base-vocab "/2014/5/pluqi/")))
 
-(def base-vocab (prefixer (base-domain "/def/")))
+(def pluqi-data (prefixer (base-vocab "/2014/5/pluqi/")))
+
+(def pluqi-graph (prefixer (base-domain "/graph/pluqi/")))
+
+(def resource-id (prefixer (base-domain "/id/")))
 
 (def base-data (prefixer (base-domain "/data/")))

@@ -6,25 +6,12 @@
             [grafter.rdf :refer [graph-fn graph s]]
             [grafter.parse :refer [mapper]]
             [grafter.sequences :refer [fill-when]]
-            [incanter.core]
             [pluqi-transformation.prefix :refer :all]
-            [pluqi-transformation.transform :refer [replace-words replace-hash extract-year]]))
+            [pluqi-transformation.transform :refer [replace-words hyphenate replace-hash
+                                                    extract-year remove-extension filename->indicator-uri
+                                                    observation-label normalise-header date-format division-uri
+                                                    observation-uri ->Integer]]))
 
-(defn select-row [ds n]
-  (->> (rows ds [n])
-       incanter.core/to-list
-       first))
-
-(defn normalise-header [ds f]
-  (let [[div type & years-row] (->> (select-row ds 0)
-                                    (drop 2))
-        type-row (->> (select-row ds 1)
-                      (drop 2))
-
-        new-header (->> (map #(str %1 " " %2) years-row type-row)
-                        (concat ["division" "type"])
-                        (map f))]
-    (make-dataset ds (map str new-header))))
 
 (defn pipeline [dataset]
   (-> dataset
@@ -36,6 +23,15 @@
                                         "highschools" "high schools"]))
       (drop-rows 2)
       (apply-columns {:division fill-when})
-      (grafter.tabular/melt :type :division)
-      (derive-column :year [:variable] extract-year)
-      (mapc {:variable replace-hash})))
+      (melt :type :division :file)
+      (derive-column :year :variable extract-year)
+
+      (mapc {:variable replace-hash :value ->Integer})
+
+      (derive-column :observation-label [:variable :year :division] observation-label)
+      (mapc {:year (date-format "yyyy")})
+      (derive-column :dataset-uri :file (comp pluqi-data remove-extension))
+      (derive-column :dimension-uri :variable (comp pluqi-data hyphenate))
+      (derive-column :observation-uri [:variable :year] observation-uri)
+      (derive-column :indicator-uri :file filename->indicator-uri)
+      (derive-column :division-uri :division division-uri)))

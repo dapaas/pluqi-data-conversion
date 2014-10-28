@@ -29,8 +29,14 @@
 
     (add (ses/rdf-serializer destination) quads)))
 
+(defn prepend-file-metadata [[context data]]
+  (let [new-data (with-metadata-columns [context data])]
+    (incanter.core/reorder-columns new-data
+                                   (concat (drop-last 2 (take-last 3 (:column-names new-data)))
+                                           (drop-last 3 (:column-names new-data))))))
+
 (defn apply-pipeline [path]
-  (-> (open-all-datasets path)
+  (-> (open-all-datasets path :metadata-fn prepend-file-metadata)
       first
       pipeline))
 
