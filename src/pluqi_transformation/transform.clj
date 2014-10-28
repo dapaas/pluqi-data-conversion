@@ -44,8 +44,13 @@
 (defn hyphenate [str]
   (cstr/replace str " " "-"))
 
-(defn observation-uri [variable year]
-  (pluqi-data (hyphenate (str variable " " year))))
+(defn observation-uri [variable division year]
+  (->> [variable division year]
+       (interpose " ")
+       (apply str)
+       hyphenate
+       cstr/lower-case
+       pluqi-data))
 
 (def filename->indicator-uri
   {"2011-2013_highschool.xlsx" (pluqi-vocab "Level_of_opportunity")})

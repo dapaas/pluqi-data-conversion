@@ -30,6 +30,6 @@
       (derive-column :observation-date :year (date-format "yyyy"))
       (derive-column :dataset-uri :file (comp pluqi-data remove-extension))
       (derive-column :dimension-uri :variable (comp pluqi-data hyphenate))
-      (derive-column :observation-uri [:variable :year] observation-uri)
+      (derive-column :observation-uri [:variable :division :year] observation-uri)
       (derive-column :indicator-uri :file filename->indicator-uri)
       (derive-column :division-uri :division division-uri)))
