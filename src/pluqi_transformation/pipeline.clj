@@ -25,11 +25,9 @@
       (apply-columns {:division fill-when})
       (melt :type :division :file)
       (derive-column :year :variable extract-year)
-
       (mapc {:variable replace-hash :value ->Integer})
-
       (derive-column :observation-label [:variable :year :division] observation-label)
-      (mapc {:year (date-format "yyyy")})
+      (derive-column :observation-date :year (date-format "yyyy"))
       (derive-column :dataset-uri :file (comp pluqi-data remove-extension))
       (derive-column :dimension-uri :variable (comp pluqi-data hyphenate))
       (derive-column :observation-uri [:variable :year] observation-uri)

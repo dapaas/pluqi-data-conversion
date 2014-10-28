@@ -15,10 +15,9 @@
 
 (def make-graph
   (graph-fn [{:keys [variable value year dataset-uri dimension-uri indicator-uri observation-uri division-uri
-                     observation-label]
+                     observation-date observation-label]
               :strs [division type]}]
 
-            ;; TODO
             (graph (pluqi-graph "example")
                    [dimension-uri
                     [rdf:a indicator-uri]
@@ -32,5 +31,5 @@
                     [(pluqi-vocab "measure") value]
                     [(pluqi-vocab "location") division-uri]
                     [(pluqi-vocab "hasValue") dataset-uri]
-                    [(pluqi-vocab "time") year]
+                    [(pluqi-vocab "time") observation-date]
                     [rdfs:comment (s type :en)]])))
