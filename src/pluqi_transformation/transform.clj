@@ -9,7 +9,30 @@
        incanter.core/to-list
        first))
 
-(defn normalise-header [ds f]
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; normalise-header functions
+
+(defn normalise-header-c
+  "cultural facilities"
+  [ds f]
+  (let [[div sub-div & years-row] (->> (select-row ds 0)
+                                       (drop 3))
+        type-row (->> (select-row ds 1)
+                      (drop 3))
+
+        data-type-row (->> (select-row ds 2)
+                           (drop 3))
+
+        new-header (->> (map #(str %1 " " %2 " "%3) years-row type-row data-type-row)
+                             (concat ["file" "division" "type"])
+                             (map f))]
+    (make-dataset ds (map str new-header))))
+
+
+(defn normalise-header-h
+  "highschool"
+  [ds f]
   (let [[div type & years-row] (->> (select-row ds 0)
                                     (drop 3))
         type-row (->> (select-row ds 1)
@@ -20,23 +43,32 @@
                         (map f))]
     (make-dataset ds (map str new-header))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defn replace-words [mapping]
   (fn [s] (reduce (fn [st [match replacement]]
-                    (cstr/replace st (re-pattern (str "\\b" match "\\b")) replacement)) s
-                    (partition 2 mapping))))
+                    ;(cstr/replace st (re-pattern (str "\\b" match "\\b")) replacement)) s
+                    (cstr/replace st (re-pattern match) replacement)) s
+                  (partition 2 mapping))))
 
 (defn ->Integer [i]
   (cond
-   (= "-" i) 0
-   (nil? i) 0
-   (number? i) (int i)
-   (string? i) (Integer/parseInt i)))
+    (= "-" i) 0
+    (nil? i) 0
+    (number? i) (int i)
+    (string? i) (Integer/parseInt i)))
 
-(defn replace-hash [cell]
-  (cstr/replace cell #".* #" "number"))
+;(defn replace-varible-string [cell]
+;  (cstr/replace cell #".* #" "number")
+;  (cstr/replace cell #"[0-9]{4} " ""))
+
+(defn replace-varible-string [cell]
+  (-> cell
+      (cstr/replace #".* #" "number")
+      (cstr/replace #"[0-9]{4} " "")))
 
 (defn extract-year [cell]
-  (first (cstr/split (str cell) #" # ")))
+  (first (cstr/split (str cell) #" # | art ")))
 
 (defn remove-extension [cell]
   (cstr/replace cell ".xlsx" ""))
@@ -53,7 +85,15 @@
        pluqi-data))
 
 (def filename->indicator-uri
-  {"2011-2013_highschool.xlsx" (pluqi-vocab "Level_of_opportunity")})
+  {"2005-2006_cultural facilities.xlsx" (pluqi-schema "Cultural_satisfaction")
+   "2007-2008_cultural facilities.xlsx" (pluqi-schema "Cultural_satisfaction")
+   "2009-2011_cultural facilities.xlsx" (pluqi-schema "Cultural_satisfaction")
+   "2011-2012_cultural facilities.xlsx" (pluqi-schema "Cultural_satisfaction")
+   "2005-2012_traffic equipment.xlsx" (pluqi-schema "Daily_life_satisfaction")
+   "2005-2008_green space.xlsx" (pluqi-schema "Environmental_needs_and_efficiency")
+   "2009-2012_green space.xlsx" (pluqi-schema "Environmental_needs_and_efficiency")
+   "2011-2013_highschool.xlsx" (pluqi-schema "Level_of_opportunity")
+   "2011-2012_place of a crime.xlsx" (pluqi-schema "Safety_and_security")})
 
 (defn division-uri [s]
   (pluqi-data s))
