@@ -30,6 +30,23 @@
     (make-dataset ds (map str new-header))))
 
 
+(defn normalise-header-t
+  "traffic equipment"
+  [ds f]
+  (let [[div & years-row] (->> (select-row ds 0)
+                               (drop 2))
+        type-row (->> (select-row ds 1)
+                      (drop 2))
+
+        data-type-row (->> (select-row ds 2)
+                           (drop 2))
+
+        new-header (->> (map #(str %1 " " %2 " "%3) years-row type-row data-type-row)
+                        (concat ["file" "division"])
+                        (map f))]
+    (make-dataset ds (map str new-header))))
+
+
 (defn normalise-header-h
   "highschool"
   [ds f]

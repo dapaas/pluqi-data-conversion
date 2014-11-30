@@ -53,7 +53,10 @@
 
     "t"
     (-> dataset
-        write-test-output)
+        (normalise-header-t (replace-words ["도로" "road"
+                                            "철도" "railroad"
+                                            "\\(.\\)" ""]))
+        (pipeline-common 3))
 
     "g"
     (-> dataset
