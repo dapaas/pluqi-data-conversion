@@ -3,14 +3,9 @@
                                      all-columns derive-column mapc swap drop-rows
                                      open-all-datasets make-dataset take-rows
                                      move-first-row-to-header _ melt apply-columns]]
-            ;[grafter.rdf :refer [graph-fn graph s]]
             [grafter.parse :refer [mapper]]
             [grafter.sequences :refer [fill-when]]
             [pluqi-transformation.prefix :refer :all]
-            ;[pluqi-transformation.transform :refer [replace-words hyphenate replace-hash
-            ;                                        extract-year remove-extension filename->indicator-uri
-            ;                                        observation-label normalise-header-h date-format division-uri
-            ;                                        observation-uri ->Integer]]))
             [pluqi-transformation.transform :refer :all]))
 
 
@@ -25,6 +20,7 @@
 
 (defn pipeline-common [dataset drop-rows-cnt & pivot-keys]
   (->  dataset
+       ;(write-test-output)))
        (drop-rows drop-rows-cnt)
        (apply-columns {:division fill-when})
        (mapply-melt pivot-keys)
@@ -40,7 +36,6 @@
 
 (defn pipeline [dataset name]
   (case name
-
     "c"
     (-> dataset
         (normalise-header-c (replace-words ["계" "total"
@@ -64,7 +59,12 @@
 
     "g"
     (-> dataset
-        write-test-output)
+        (normalise-header-g (replace-words ["계" "total"
+                                            "완충녹지" "buffer space"
+                                            "경관녹지" "green landscape"
+                                            "연결녹지" "green area connecter"
+                                            "\\s\\(.\\)" ""]))
+        (pipeline-common 4 :type :division :file))
 
     "h"
     (-> dataset

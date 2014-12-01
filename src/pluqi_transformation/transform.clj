@@ -47,6 +47,11 @@
     (make-dataset ds (map str new-header))))
 
 
+(defn normalise-header-g
+  "green space"
+  [ds f]
+  (normalise-header-c ds f))
+
 (defn normalise-header-h
   "highschool"
   [ds f]
