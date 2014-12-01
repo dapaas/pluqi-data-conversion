@@ -32,8 +32,8 @@
                     [(pluqi-schema "measure") value]
                     [(pluqi-schema "location") division-uri]
                     [(pluqi-schema "hasValue") dataset-uri]
-                    [(pluqi-schema "time") observation-date]
-                    [rdfs:comment (s type :en)]]
+                    [(pluqi-schema "time") observation-date]]
+                    ;[rdfs:comment (s type :en)]
 
                    [dataset-uri
                     [rdf:a (pluqi-schema "DataSource")]
