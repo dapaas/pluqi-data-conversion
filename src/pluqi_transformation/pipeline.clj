@@ -19,11 +19,15 @@
       (take-rows 10)
       println))
 
-(defn pipeline-common [dataset drop-rows-cnt]
+(defn mapply [f & args] (apply f (apply concat (butlast args) (last args))))
+(defn mapply-melt [dataset & pivot-keys]
+  (mapply melt dataset pivot-keys))
+
+(defn pipeline-common [dataset drop-rows-cnt & pivot-keys]
   (->  dataset
        (drop-rows drop-rows-cnt)
        (apply-columns {:division fill-when})
-       (melt :type :division :file)
+       (mapply-melt pivot-keys)
        (derive-column :year :variable extract-year)
        (mapc {:variable replace-varible-string :value ->Integer})
        (derive-column :observation-label [:variable :year :division] observation-label)
@@ -48,15 +52,15 @@
                                             "문화산업진흥시설" "facilities for advancement of the cultural industry"
                                             "지방문화원" "local cultural institutes"
                                             "문화시설" "cultural facilities"
-                                            "\\(.\\)" ""]))
-        (pipeline-common 4))
+                                            "\\s\\(.\\)" ""]))
+        (pipeline-common 4 :type :division :file))
 
     "t"
     (-> dataset
         (normalise-header-t (replace-words ["도로" "road"
                                             "철도" "railroad"
-                                            "\\(.\\)" ""]))
-        (pipeline-common 3))
+                                            "\\s\\(.\\)" ""]))
+        (pipeline-common 3 :division :file))
 
     "g"
     (-> dataset
@@ -70,7 +74,7 @@
                                             "girl's" "female"
                                             "graduate" "graduates"
                                             "highschools" "high schools"]))
-        (pipeline-common 2))
+        (pipeline-common 2 :type :division :file))
 
     "p"
     (-> dataset

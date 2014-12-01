@@ -24,9 +24,9 @@
         data-type-row (->> (select-row ds 2)
                            (drop 3))
 
-        new-header (->> (map #(str %1 " " %2 " "%3) years-row type-row data-type-row)
-                             (concat ["file" "division" "type"])
-                             (map f))]
+        new-header (->> (map #(str (cstr/trim %1) " " (cstr/trim %2) " " (cstr/trim %3)) years-row type-row data-type-row)
+                        (concat ["file" "division" "type"])
+                        (map f))]
     (make-dataset ds (map str new-header))))
 
 
@@ -41,7 +41,7 @@
         data-type-row (->> (select-row ds 2)
                            (drop 2))
 
-        new-header (->> (map #(str %1 " " %2 " "%3) years-row type-row data-type-row)
+        new-header (->> (map #(str (cstr/trim %1) " " (cstr/trim %2) " " (cstr/trim %3)) years-row type-row data-type-row)
                         (concat ["file" "division"])
                         (map f))]
     (make-dataset ds (map str new-header))))
@@ -55,7 +55,7 @@
         type-row (->> (select-row ds 1)
                       (drop 3))
 
-        new-header (->> (map #(str %1 " " %2) years-row type-row)
+        new-header (->> (map #(str (cstr/trim %1) " " (cstr/trim %2)) years-row type-row)
                         (concat ["file" "division" "type"])
                         (map f))]
     (make-dataset ds (map str new-header))))
@@ -75,17 +75,14 @@
     (number? i) (int i)
     (string? i) (Integer/parseInt i)))
 
-;(defn replace-varible-string [cell]
-;  (cstr/replace cell #".* #" "number")
-;  (cstr/replace cell #"[0-9]{4} " ""))
-
 (defn replace-varible-string [cell]
   (-> cell
       (cstr/replace #".* #" "number")
       (cstr/replace #"[0-9]{4} " "")))
 
 (defn extract-year [cell]
-  (first (cstr/split (str cell) #" # | art ")))
+  ;(first (cstr/split (str cell) #" # | art | railroad ")))
+  (apply str (filter #(Character/isDigit %) (str cell))))
 
 (defn remove-extension [cell]
   (cstr/replace cell ".xlsx" ""))
@@ -106,11 +103,11 @@
    "2007-2008_cultural facilities.xlsx" (pluqi-schema "Cultural_satisfaction")
    "2009-2011_cultural facilities.xlsx" (pluqi-schema "Cultural_satisfaction")
    "2011-2012_cultural facilities.xlsx" (pluqi-schema "Cultural_satisfaction")
-   "2005-2012_traffic equipment.xlsx" (pluqi-schema "Daily_life_satisfaction")
-   "2005-2008_green space.xlsx" (pluqi-schema "Environmental_needs_and_efficiency")
-   "2009-2012_green space.xlsx" (pluqi-schema "Environmental_needs_and_efficiency")
-   "2011-2013_highschool.xlsx" (pluqi-schema "Level_of_opportunity")
-   "2011-2012_place of a crime.xlsx" (pluqi-schema "Safety_and_security")})
+   "2005-2012_traffic equipment.xlsx"   (pluqi-schema "Daily_life_satisfaction")
+   "2005-2008_green space.xlsx"         (pluqi-schema "Environmental_needs_and_efficiency")
+   "2009-2012_green space.xlsx"         (pluqi-schema "Environmental_needs_and_efficiency")
+   "2011-2013_highschool.xlsx"          (pluqi-schema "Level_of_opportunity")
+   "2011-2012_place of a crime.xlsx"    (pluqi-schema "Safety_and_security")})
 
 (defn division-uri [s]
   (pluqi-data s))
