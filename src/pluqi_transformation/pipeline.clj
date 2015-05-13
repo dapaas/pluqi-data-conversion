@@ -6,12 +6,13 @@
             [grafter.parse :refer [mapper]]
             [grafter.sequences :refer [fill-when]]
             [pluqi-transformation.prefix :refer :all]
-            [pluqi-transformation.transform :refer :all]))
+            [pluqi-transformation.transform :refer :all]
+            [clojure.string :as cstr]))
 
 
 (defn write-test-output [ds]
   (-> ds
-      (take-rows 10)
+      (take-rows 50)
       println))
 
 (defn mapply [f & args] (apply f (apply concat (butlast args) (last args))))
@@ -78,4 +79,16 @@
 
     "p"
     (-> dataset
-        write-test-output)))
+        (normalise-header-p (replace-words ["다" ""]))
+        (drop-rows 3)
+        (melt :type :file)
+        (derive-column :year :variable extract-year)
+        (derive-column :division :variable extract-div)
+        (mapc {:value ->Integer})
+        (derive-column :observation-label [:variable :year :division :type] observation-label-with-type)
+        (derive-column :observation-date :year (date-format "yyyy"))
+        (derive-column :dataset-uri :file (comp pluqi-data remove-extension))
+        (derive-column :dimension-uri :type (comp pluqi-data hyphenate))
+        (derive-column :observation-uri [:type :division :year] observation-uri)
+        (derive-column :indicator-uri :file filename->indicator-uri)
+        (derive-column :division-uri :division division-uri))))

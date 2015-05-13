@@ -44,13 +44,23 @@
   (-> (apply-pipeline path pipeline-name)
       make-graph))
 
-(defn -main [& [path output pipeline-name]]
+;(defn -main [& [path output pipeline-name]]
+;  (when-not (and path output)
+;    (println "Usage: lein run <input-file.csv> <output-file.(nt|rdf|n3|ttl)
+;              <pipeline-name (c:cultural facilities | t:traffic equipment | g:green space | h:highschool | p:place of a crime)>")
+;    (System/exit 0))
+;
+;  (-> (apply-complete-transformation path pipeline-name)
+;      (import-data output))
+;
+;  (println path "=>" output))
+
+(defn -main [& [path output]]
   (when-not (and path output)
-    (println "Usage: lein run <input-file.csv> <output-file.(nt|rdf|n3|ttl)
-              <pipeline-name (c:cultural facilities | t:traffic equipment | g:green space | h:highschool | p:place of a crime)>")
+    (println "Usage: lein run <input-file.csv> <output-file.(nt|rdf|n3|ttl)>")
     (System/exit 0))
 
-  (-> (apply-complete-transformation path pipeline-name)
+  (-> (apply-complete-transformation path "p")
       (import-data output))
 
   (println path "=>" output))
