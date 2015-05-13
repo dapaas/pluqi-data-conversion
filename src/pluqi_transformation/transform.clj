@@ -69,7 +69,7 @@
   "place of a crime"
   [ds f]
   (let [[blank & years-row] (->> (select-row ds 0)
-                                (drop 3))
+                                 (drop 3))
         div-row (->> (select-row ds 1)
                      (drop 3))
         new-header (->> (map #(str %1 " " %2) years-row div-row)

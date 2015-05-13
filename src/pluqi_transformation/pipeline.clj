@@ -20,20 +20,20 @@
   (mapply melt dataset pivot-keys))
 
 (defn pipeline-common [dataset drop-rows-cnt & pivot-keys]
-  (->  dataset
-       ;(write-test-output)))
-       (drop-rows drop-rows-cnt)
-       (apply-columns {:division fill-when})
-       (mapply-melt pivot-keys)
-       (derive-column :year :variable extract-year)
-       (mapc {:variable replace-varible-string :value ->Integer})
-       (derive-column :observation-label [:variable :year :division] observation-label)
-       (derive-column :observation-date :year (date-format "yyyy"))
-       (derive-column :dataset-uri :file (comp pluqi-data remove-extension))
-       (derive-column :dimension-uri :variable (comp pluqi-data hyphenate))
-       (derive-column :observation-uri [:variable :division :year] observation-uri)
-       (derive-column :indicator-uri :file filename->indicator-uri)
-       (derive-column :division-uri :division division-uri)))
+  (-> dataset
+      ;(write-test-output)))
+      (drop-rows drop-rows-cnt)
+      (apply-columns {:division fill-when})
+      (mapply-melt pivot-keys)
+      (derive-column :year :variable extract-year)
+      (mapc {:variable replace-varible-string :value ->Integer})
+      (derive-column :observation-label [:variable :year :division] observation-label)
+      (derive-column :observation-date :year (date-format "yyyy"))
+      (derive-column :dataset-uri :file (comp pluqi-data remove-extension))
+      (derive-column :dimension-uri :variable (comp pluqi-data hyphenate))
+      (derive-column :observation-uri [:variable :division :year] observation-uri)
+      (derive-column :indicator-uri :file filename->indicator-uri)
+      (derive-column :division-uri :division division-uri)))
 
 (defn pipeline [dataset name]
   (case name

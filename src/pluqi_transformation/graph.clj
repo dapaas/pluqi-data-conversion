@@ -10,7 +10,7 @@
             [grafter.rdf.ontologies.qb :refer :all]
             [grafter.rdf.ontologies.os :refer :all]
             [grafter.rdf.ontologies.sdmx-measure :refer :all]
-            ;[pluqi-transformation.prefix :refer [pluqi-graph pluqi-vocab base-vocab base-data resource-id]]))
+    ;[pluqi-transformation.prefix :refer [pluqi-graph pluqi-vocab base-vocab base-data resource-id]]))
             [pluqi-transformation.prefix :refer [pluqi-graph pluqi-schema pluqi-data]]))
 
 (def make-graph
@@ -33,7 +33,7 @@
                     [(pluqi-schema "location") division-uri]
                     [(pluqi-schema "hasValue") dataset-uri]
                     [(pluqi-schema "time") observation-date]]
-                    ;[rdfs:comment (s type :en)]
+                   ;[rdfs:comment (s type :en)]
 
                    [dataset-uri
                     [rdf:a (pluqi-schema "DataSource")]
