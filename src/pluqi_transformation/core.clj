@@ -35,21 +35,32 @@
                                    (concat (drop-last 2 (take-last 3 (:column-names new-data)))
                                            (drop-last 3 (:column-names new-data))))))
 
-(defn apply-pipeline [path]
+(defn apply-pipeline [path pipeline-name]
   (-> (open-all-datasets path :metadata-fn prepend-file-metadata)
       first
-      pipeline))
+      (pipeline pipeline-name)))
 
-(defn apply-complete-transformation [path]
-  (-> (apply-pipeline path)
+(defn apply-complete-transformation [path pipeline-name]
+  (-> (apply-pipeline path pipeline-name)
       make-graph))
+
+;(defn -main [& [path output pipeline-name]]
+;  (when-not (and path output)
+;    (println "Usage: lein run <input-file.csv> <output-file.(nt|rdf|n3|ttl)
+;              <pipeline-name (c:cultural facilities | t:traffic equipment | g:green space | h:highschool | p:place of a crime)>")
+;    (System/exit 0))
+;
+;  (-> (apply-complete-transformation path pipeline-name)
+;      (import-data output))
+;
+;  (println path "=>" output))
 
 (defn -main [& [path output]]
   (when-not (and path output)
     (println "Usage: lein run <input-file.csv> <output-file.(nt|rdf|n3|ttl)>")
     (System/exit 0))
 
-  (-> (apply-complete-transformation path)
+  (-> (apply-complete-transformation path "p")
       (import-data output))
 
   (println path "=>" output))

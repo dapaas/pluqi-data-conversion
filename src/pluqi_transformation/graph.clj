@@ -10,8 +10,8 @@
             [grafter.rdf.ontologies.qb :refer :all]
             [grafter.rdf.ontologies.os :refer :all]
             [grafter.rdf.ontologies.sdmx-measure :refer :all]
-            [pluqi-transformation.prefix :refer [pluqi-graph pluqi-vocab base-vocab base-data resource-id]]))
-
+    ;[pluqi-transformation.prefix :refer [pluqi-graph pluqi-vocab base-vocab base-data resource-id]]))
+            [pluqi-transformation.prefix :refer [pluqi-graph pluqi-schema pluqi-data]]))
 
 (def make-graph
   (graph-fn [{:keys [variable value year dataset-uri dimension-uri
@@ -23,18 +23,18 @@
                    [dimension-uri
                     [rdf:a indicator-uri]
                     [rdf:a (owl "NamedIndividual")]
-                    [(pluqi-vocab "hasValue") observation-uri]]
+                    [(pluqi-schema "hasValue") observation-uri]]
 
                    [observation-uri
                     [rdf:a (owl "NamedIndividual")]
-                    [rdf:a (pluqi-vocab "Value")]
+                    [rdf:a (pluqi-schema "Value")]
                     [rdfs:label (s observation-label :en)]
-                    [(pluqi-vocab "measure") value]
-                    [(pluqi-vocab "location") division-uri]
-                    [(pluqi-vocab "hasValue") dataset-uri]
-                    [(pluqi-vocab "time") observation-date]
-                    [rdfs:comment (s type :en)]]
+                    [(pluqi-schema "measure") value]
+                    [(pluqi-schema "location") division-uri]
+                    [(pluqi-schema "hasValue") dataset-uri]
+                    [(pluqi-schema "time") observation-date]]
+                   ;[rdfs:comment (s type :en)]
 
                    [dataset-uri
-                    [rdf:a (pluqi-vocab "DataSource")]
+                    [rdf:a (pluqi-schema "DataSource")]
                     [rdf:a (owl "NamedIndividual")]])))

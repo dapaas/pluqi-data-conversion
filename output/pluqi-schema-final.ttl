@@ -1,0 +1,223 @@
+@prefix : <http://project.dapaas.eu/pluqi/schema/> .
+@prefix ad: <http://lod.seoul.go.kr/def/ad/> .
+@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <http://project.dapaas.eu/pluqi/schema> .
+
+<http://project.dapaas.eu/pluqi/schema> rdf:type owl:Ontology .
+
+
+#################################################################
+#
+#    Object Properties
+#
+#################################################################
+
+
+###  http://project.dapaas.eu/pluqi/schema/from
+
+:from rdf:type owl:ObjectProperty ;
+      
+      rdfs:range :DataSource ;
+      
+      rdfs:domain :Value .
+
+
+
+###  http://project.dapaas.eu/pluqi/schema/hasValue
+
+:hasValue rdf:type owl:ObjectProperty ;
+          
+          rdfs:domain :Quality_Index ;
+          
+          rdfs:range :Value .
+
+
+
+###  http://project.dapaas.eu/pluqi/schema/location
+
+:location rdf:type owl:ObjectProperty ;
+          
+          rdfs:range :Location ;
+          
+          rdfs:domain :Value .
+
+
+
+
+
+#################################################################
+#
+#    Data properties
+#
+#################################################################
+
+
+###  http://project.dapaas.eu/pluqi/schema/measure
+
+:measure rdf:type owl:DatatypeProperty ;
+         
+         rdfs:domain :Value .
+
+
+
+###  http://project.dapaas.eu/pluqi/schema/time
+
+:time rdf:type owl:DatatypeProperty ;
+      
+      rdfs:domain :Value ;
+      
+      rdfs:range xsd:dateTimeStamp ;
+      
+      rdfs:subPropertyOf owl:topDataProperty .
+
+
+
+###  http://www.w3.org/2003/01/geo/wgs84_pos#lat
+
+geo:lat rdf:type owl:DatatypeProperty ;
+        
+        rdfs:domain :Location ;
+        
+        rdfs:range xsd:double ;
+        
+        rdfs:subPropertyOf owl:topDataProperty .
+
+
+
+###  http://www.w3.org/2003/01/geo/wgs84_pos#long
+
+geo:long rdf:type owl:DatatypeProperty ;
+         
+         rdfs:domain :Location ;
+         
+         rdfs:range xsd:double ;
+         
+         rdfs:subPropertyOf owl:topDataProperty .
+
+
+
+
+
+#################################################################
+#
+#    Classes
+#
+#################################################################
+
+
+###  http://lod.seoul.go.kr/def/ad/Si
+
+ad:Si rdf:type owl:Class ;
+      
+      rdfs:label "City"^^xsd:string ;
+      
+      rdfs:subClassOf <http://lod.seoul.go.kr/page/def/ad/KoreaAdministrativeDivisions> ;
+      
+      rdfs:seeAlso "<http://lod.seoul.go.kr/def/ad/Si>"^^xsd:anyURI .
+
+
+
+###  http://lod.seoul.go.kr/page/def/ad/KoreaAdministrativeDivisions
+
+<http://lod.seoul.go.kr/page/def/ad/KoreaAdministrativeDivisions> rdf:type owl:Class ;
+                                                                  
+                                                                  rdfs:subClassOf :Location .
+
+
+
+###  http://project.dapaas.eu/pluqi/schema/Cultural_satisfaction
+
+:Cultural_satisfaction rdf:type owl:Class ;
+                       
+                       rdfs:subClassOf :Quality_Index .
+
+
+
+###  http://project.dapaas.eu/pluqi/schema/Daily_life_satisfaction
+
+:Daily_life_satisfaction rdf:type owl:Class ;
+                         
+                         rdfs:subClassOf :Quality_Index .
+
+
+
+###  http://project.dapaas.eu/pluqi/schema/DataSource
+
+:DataSource rdf:type owl:Class .
+
+
+
+###  http://project.dapaas.eu/pluqi/schema/Environmental_needs_and_efficiency
+
+:Environmental_needs_and_efficiency rdf:type owl:Class ;
+                                    
+                                    rdfs:subClassOf :Quality_Index .
+
+
+
+###  http://project.dapaas.eu/pluqi/schema/Financial_satisfaction
+
+:Financial_satisfaction rdf:type owl:Class ;
+                        
+                        rdfs:subClassOf :Quality_Index .
+
+
+
+###  http://project.dapaas.eu/pluqi/schema/Healthcare_Level
+
+:Healthcare_Level rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :Quality_Index .
+
+
+
+###  http://project.dapaas.eu/pluqi/schema/Level_of_opportunity
+
+:Level_of_opportunity rdf:type owl:Class ;
+                      
+                      rdfs:subClassOf :Quality_Index .
+
+
+
+###  http://project.dapaas.eu/pluqi/schema/Location
+
+:Location rdf:type owl:Class .
+
+
+
+###  http://project.dapaas.eu/pluqi/schema/Political_satisfaction
+
+:Political_satisfaction rdf:type owl:Class ;
+                        
+                        rdfs:subClassOf :Quality_Index .
+
+
+
+###  http://project.dapaas.eu/pluqi/schema/Quality_Index
+
+:Quality_Index rdf:type owl:Class .
+
+
+
+###  http://project.dapaas.eu/pluqi/schema/Safety_and_security
+
+:Safety_and_security rdf:type owl:Class ;
+                     
+                     rdfs:subClassOf :Quality_Index .
+
+
+
+###  http://project.dapaas.eu/pluqi/schema/Value
+
+:Value rdf:type owl:Class .
+
+
+
+
+###  Generated by the OWL API (version 3.5.0) http://owlapi.sourceforge.net
+
